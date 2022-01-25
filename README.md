@@ -1,2 +1,1 @@
-# ansible-service-status
-Simple ansible playbook to check if a service is running in server
+# A set of ansible playbooks for simple tasks
