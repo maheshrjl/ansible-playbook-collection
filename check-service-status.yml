@@ -1,0 +1,21 @@
+---
+- name: Check sshd status
+  hosts: all
+  remote_user: user
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: ping all servers
+      ansible.builtin.ping:
+      register: ping_stat
+
+    - name: check if sshd is running
+      ansible.builtin.shell: ps cax | grep sshd
+      register: sshd_status
+
+    - debug:
+        var: ping_stat
+        
+    - debug:
+        msg: "{{sshd_status.stdout}}"
