@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+  - name: Copy file from host to all servers in inventory
+    copy:
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: sudo
+      group: sudo
+      mode: 0777
+      force: yes
+
+    with_items:
+      - src: /home/hello.txt
+        dest: /home/hello.txt
