@@ -1,0 +1,10 @@
+---
+- name: Append text to a file 
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Append a line to text file
+      lineinfile:
+        path: /home/sdp/.bash_profile
+        line: Text to be added
