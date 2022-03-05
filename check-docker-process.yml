@@ -2,26 +2,37 @@
 
 ---
 - name: Check container names
-  hosts: container_names
+  hosts: docker_containers
   remote_user: mahesh.rijal
   become: yes
-  gather_facts: no
+  gather_facts: yes
+  strategy: free
+
+  pre_tasks:
+    - name: Check if docker is installed
+      command: docker --version
+      register: docker_valid
+      ignore_errors: yes
 
   tasks:
-  
     - name: Check all running containers
       become: yes
       command: docker ps --format "{{ '{{' }} .Names {{ '}}' }}"
       register: dkr_ps
-      
-    - name: Pring all running container names    
-      debug: msg="{{dkr_ps.stdout_lines}}"
+      when: docker_valid
 
-    #- local_action: copy content={{ dkr_ps.stdout_lines }} dest=/home/sdp/ansible/playbookoutput.txt
+    - name: Print all running container names    
+      debug: 
+        msg:
+          - "{{ dkr_ps.stdout_lines }}"          
 
-    - name: Copy results to a file
+    - name: Copy results to file
       lineinfile:
-        line: "{{ dkr_ps }}"
+        line: 
+          - "{{ ansible_default_ipv4.address }}"
+          - "{{ dkr_ps.stdout_lines }}"
         insertafter: EOF
-        dest: /home/mhs/ansible/playbookoutput.txt
+        dest: /home/mhs/ansible/container-names.txt
       delegate_to: 127.0.0.1
+
+#- local_action: copy content={{ dkr_ps.stdout_lines }} dest=/home/sdp/ansible/playbookoutput.txt
